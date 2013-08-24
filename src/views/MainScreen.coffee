@@ -4,7 +4,8 @@ define [
     "resources/Constants"
     "utils/ImageLoader"
     "views/LoadingScreen"
-], (Screen, Kinetic, Constants, ImageLoader, LoadingScreen) ->
+    "views/GameScreen"
+], (Screen, Kinetic, Constants, ImageLoader, LoadingScreen, GameScreen) ->
 
     class SplashScreen extends Screen
 
@@ -33,4 +34,4 @@ define [
                         gameBackground: "images/game/background.png"
 
                 game.switchScreen new LoadingScreen gameScreenManifest, =>
-                    console.log "Game screen!"
+                    game.switchScreen new GameScreen game
