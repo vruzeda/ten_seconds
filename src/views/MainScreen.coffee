@@ -32,6 +32,7 @@ define [
                 gameScreenManifest =
                     GAME_SCREEN:
                         gameBackground: "images/game/background.png"
+                        gameTile:       "images/game/tile.png"
 
                 game.switchScreen new LoadingScreen gameScreenManifest, =>
                     game.switchScreen new GameScreen game
