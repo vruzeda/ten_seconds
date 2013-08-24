@@ -7,7 +7,7 @@ define [
 
     class SplashScreen extends Screen
 
-        LOADING_IMAGE_PERIOD = 1
+        LOADING_IMAGE_PERIOD = 2
 
         constructor: (manifest, callback) ->
             super()
@@ -20,8 +20,8 @@ define [
             loadingImage = ImageLoader.getImage "loading"
             @_layer.add new Kinetic.Image
                 name: "loading"
-                x: Constants.RESOLUTION.width  / 2
-                y: Constants.RESOLUTION.height / 2
+                x: Constants.RESOLUTION.width  - loadingImage.width  * Math.sqrt 2
+                y: Constants.RESOLUTION.height - loadingImage.height * Math.sqrt 2
                 offsetX: loadingImage.width  / 2
                 offsetY: loadingImage.height / 2
                 image: loadingImage
