@@ -1,6 +1,6 @@
 define [], ->
 
-	class TenSeconds
+    class TenSeconds
 
-		constructor: ->
-			console.log "Test!"
+        constructor: ->
+            console.log "Test!"
