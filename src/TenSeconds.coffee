@@ -1,26 +1,38 @@
 define [
     "Kinetic"
     "resources/Constants"
-], (Kinetic, Constants) ->
+    "views/SplashScreen"
+], (Kinetic, Constants, SplashScreen) ->
 
     class TenSeconds
 
         constructor: ->
-            rect = new Kinetic.Rect
-                x: 239
-                y: 75
-                width: 100
-                height: 50
-                fill: "green"
-                stroke: "black"
-                strokeWidth: 4
+            @_stage = @_createStage()
+            @_switchScreen @_createInitialScreen()
 
-            layer = new Kinetic.Layer()
-            layer.add rect
+            gameLoopAnimation = new Kinetic.Animation @_gameLoop
+            gameLoopAnimation.start()
 
-            stage = new Kinetic.Stage
+        _createStage: ->
+            new Kinetic.Stage
                 container: "container"
                 width:  Constants.RESOLUTION.width
                 height: Constants.RESOLUTION.height
-            stage.add layer
 
+        _createInitialScreen: ->
+            new SplashScreen()
+
+        _gameLoop: ({timeDiff: deltaTime}) =>
+            @_update deltaTime
+            @_redraw()
+
+        _update: (deltaTime) ->
+            @_screen.update deltaTime
+
+        _redraw: ->
+            @_screen.redraw()
+
+        _switchScreen: (screen) ->
+            screen.show @_stage
+            @_screen.hide @_stage if @_screen?
+            @_screen = screen
