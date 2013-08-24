@@ -26,4 +26,5 @@ define [
                 progressCallback: (total, complete, success) ->
 
                 completeCallback: ->
-                    game.switchScreen new LoadingScreen game
+                    game.switchScreen new LoadingScreen game, {}, ->
+                        console.log "Main Screen!"

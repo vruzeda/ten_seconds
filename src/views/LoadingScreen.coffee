@@ -9,7 +9,7 @@ define [
 
         LOADING_IMAGE_PERIOD = 1
 
-        constructor: (game) ->
+        constructor: (game, manifest, callback) ->
             super game
 
             @_layer.add new Kinetic.Rect
@@ -25,6 +25,11 @@ define [
                 offsetX: loadingImage.width  / 2
                 offsetY: loadingImage.height / 2
                 image: loadingImage
+
+            ImageLoader.addToList manifest
+            ImageLoader.loadImages
+                list: (list for list of manifest)
+                completeCallback: callback
 
         update: (deltaTime) ->
             @_accumulatedTime ?= 0

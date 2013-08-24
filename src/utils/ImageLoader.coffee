@@ -192,7 +192,8 @@ define [], ->
                         @_attachCallback imageInfo, (image, imageInfo) ->
                             complete imageInfo, imageInfo.status
 
-            if list.length is 0
+            imageNames = (imageName for imageName of list)
+            if imageNames.length == 0
                 if progressCallback?
                     callProgress numImages, numComplete, numSuccesses
 
