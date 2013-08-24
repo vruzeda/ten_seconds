@@ -4,7 +4,7 @@ define [
 
     class Screen
 
-        constructor: ->
+        constructor: (@_game) ->
             @_layer = @_createLayer()
 
         _createLayer: ->

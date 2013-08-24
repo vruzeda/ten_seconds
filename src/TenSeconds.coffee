@@ -8,7 +8,7 @@ define [
 
         constructor: ->
             @_stage = @_createStage()
-            @_switchScreen @_createInitialScreen()
+            @switchScreen @_createInitialScreen()
 
             gameLoopAnimation = new Kinetic.Animation @_gameLoop
             gameLoopAnimation.start()
@@ -20,7 +20,7 @@ define [
                 height: Constants.RESOLUTION.height
 
         _createInitialScreen: ->
-            new SplashScreen()
+            new SplashScreen @
 
         _gameLoop: ({timeDiff: deltaTime}) =>
             @_update deltaTime
@@ -32,7 +32,7 @@ define [
         _redraw: ->
             @_screen.redraw()
 
-        _switchScreen: (screen) ->
+        switchScreen: (screen) ->
             screen.show @_stage
             @_screen.hide @_stage if @_screen?
             @_screen = screen
