@@ -4,12 +4,13 @@ define [
     "resources/Constants"
     "utils/ImageLoader"
     "views/LoadingScreen"
-], (Screen, Kinetic, Constants, ImageLoader, LoadingScreen) ->
+    "views/MainScreen"
+], (Screen, Kinetic, Constants, ImageLoader, LoadingScreen, MainScreen) ->
 
     class SplashScreen extends Screen
 
         constructor: (game) ->
-            super game
+            super()
 
             @_layer.add new Kinetic.Rect
                 width:  Constants.RESOLUTION.width
@@ -23,8 +24,11 @@ define [
             ImageLoader.loadImages
                 list: ["LOADING_SCREEN"]
 
-                progressCallback: (total, complete, success) ->
-
                 completeCallback: ->
-                    game.switchScreen new LoadingScreen game, {}, ->
-                        console.log "Main Screen!"
+                    mainScreenManifest =
+                        MAIN_SCREEN:
+                            mainBackground: "images/main/background.png"
+                            mainPlayButton: "images/main/playbutton.png"
+
+                    game.switchScreen new LoadingScreen mainScreenManifest, ->
+                        game.switchScreen new MainScreen game

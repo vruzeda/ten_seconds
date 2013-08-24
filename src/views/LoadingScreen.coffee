@@ -9,8 +9,8 @@ define [
 
         LOADING_IMAGE_PERIOD = 1
 
-        constructor: (game, manifest, callback) ->
-            super game
+        constructor: (manifest, callback) ->
+            super()
 
             @_layer.add new Kinetic.Rect
                 width:  Constants.RESOLUTION.width
