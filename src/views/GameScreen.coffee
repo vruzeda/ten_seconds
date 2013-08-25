@@ -23,6 +23,8 @@ define [
 
             @_createLevel @_level
 
+            @_needsRedraw = true
+
         _createLevel: (level) ->
             @_map = new Map level
             @_mapRenderer = new MapRenderer @_layer, @_map
@@ -64,15 +66,15 @@ define [
             yIncrement++ if @_movingDown
             yIncrement-- if @_movingUp
 
-            characters = @_layer.get(".character")
-            if characters.length > 0
+            @_characters ?= @_layer.get(".character")
+            if @_characters.length > 0
                 if xIncrement != 0 or yIncrement != 0
                     speed = Constants.CHARACTER_MOVEMENT.WALKING
                     speed = Constants.CHARACTER_MOVEMENT.RUNNING if @_running
 
-                    @_moveCharactersTo characters, xIncrement, yIncrement, speed, deltaTime
+                    @_moveCharactersTo @_characters, xIncrement, yIncrement, speed, deltaTime
 
-                @_checkVictoryCondition characters
+                @_checkVictoryCondition @_characters
 
         _moveCharactersTo: (characters, xIncrement, yIncrement, speed, deltaTime) ->
             for character in characters
@@ -100,6 +102,7 @@ define [
             switch object.getName()
                 when "empty", "character"
                     character.setAttr coordinate, position
+                    @_needsRedraw = true
 
                 when "trap"
                     @_resetLevel()
@@ -154,3 +157,7 @@ define [
             @_game.switchScreen new LoadingScreen {}, =>
                 @_game.switchScreen new GameScreen @_game, levelFile
 
+        redraw: ->
+            if @_needsRedraw
+                @_layer.draw()
+                @_needsRedraw = false

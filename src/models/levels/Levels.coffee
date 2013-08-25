@@ -8,15 +8,18 @@ define [
             @_levels = {}
 
             levelList = [
-                "level.1"
-                "level.2"
-                "level.3"
-                "level.4"
-                "level.5"
-                "level.6"
-                "level.7"
+                "level.intro.walking"
+                "level.intro.running"
+                "level.intro.traps"
+                "level.intro.loopholes"
+                "level.intro.greenhole"
+                "level.intro.bodysplit"
+                "level.bodysplit.1"
+                "level.bodysplit.2"
+                "level.bodysplit.3"
+                "level.bodysplit.4"
                 "level.8"
-                "level.9"
+                "level.game.over"
             ]
 
             levelsLatch = new CountdownLatch levelList.length,

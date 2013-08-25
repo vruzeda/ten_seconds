@@ -10,7 +10,7 @@ define [
     MESSAGE_OPTIONS:
         y: 100
 
-    NEXT_LEVEL: "level.4"
+    NEXT_LEVEL: "level.intro.loopholes"
 
     MAP:
         [

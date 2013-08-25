@@ -14,7 +14,7 @@ define [
     MESSAGE_OPTIONS:
         y: 100
 
-    NEXT_LEVEL: "level.3"
+    NEXT_LEVEL: "level.intro.traps"
 
     MAP:
         [

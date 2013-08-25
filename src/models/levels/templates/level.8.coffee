@@ -2,7 +2,7 @@ define [
     "resources/Constants"
 ], (Constants) ->
 
-    NEXT_LEVEL: "level.9"
+    NEXT_LEVEL: "level.game.over"
 
     MAP:
         [

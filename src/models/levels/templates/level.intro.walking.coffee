@@ -16,7 +16,7 @@ define [
     MESSAGE_OPTIONS:
         y: 100
 
-    NEXT_LEVEL: "level.2"
+    NEXT_LEVEL: "level.intro.running"
 
     MAP:
         [

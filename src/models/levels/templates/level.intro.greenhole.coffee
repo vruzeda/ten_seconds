@@ -1,15 +1,23 @@
 define [
     "resources/Constants"
-    "models/objects/Character"
-], (Constants, Character) ->
+    "models/objects/Portal"
+], (Constants, Portal) ->
 
     MESSAGE: [
-        "You have to find your other half!\n\nMove around using WASD"
+        "AT LAST!"
+        ""
+        "If you still don't remember, that over there is"
+        "your new Portal... your under-development"
+        "Time Traveling Portal, the Green Hole."
+        ""
+        "And yes, you are going to test it yourself."
+        "As you said, it was your idea..."
+        "(Great argument...)"
     ]
     MESSAGE_OPTIONS:
         y: 100
 
-    NEXT_LEVEL: "level.8"
+    NEXT_LEVEL: "level.intro.bodysplit"
 
     MAP:
         [
@@ -29,9 +37,9 @@ define [
             "                                "
             "                                "
             "                                "
-            "   WTTTTTTTTTTTTTTTTTTTTTTTTW   "
+            "   WWWWWWWWWWWWWWWWWWWWWWWWWW   "
             "   W                        W   "
-            "   W 0                    1 W   "
+            "   W C                    0 W   "
             "   W                        W   "
             "   WWWWWWWWWWWWWWWWWWWWWWWWWW   "
             "                                "
@@ -41,12 +49,6 @@ define [
 
     SPECIAL:
         0:
-            Class: Character
+            Class: Portal
             options:
-                reflexive: false
-
-        1:
-            Class: Character
-            options:
-                reflexive: true
-
+                fill: "#00FF00"

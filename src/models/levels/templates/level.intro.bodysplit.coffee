@@ -17,7 +17,7 @@ define [
     MESSAGE_OPTIONS:
         y: 100
 
-    NEXT_LEVEL: "level.7"
+    NEXT_LEVEL: "level.bodysplit.1"
 
     MAP:
         [

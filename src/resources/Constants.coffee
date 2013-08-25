@@ -5,7 +5,7 @@ define [], ->
             width: 1024
             height: 768
 
-        FIRST_LEVEL: "level.1"
+        FIRST_LEVEL: "level.intro.walking"
 
         TILE_SIZE: 32
 

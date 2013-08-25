@@ -11,7 +11,7 @@ define [
     MESSAGE_OPTIONS:
         y: 100
 
-    NEXT_LEVEL: "level.5"
+    NEXT_LEVEL: "level.intro.greenhole"
 
     MAP:
         [
@@ -45,4 +45,4 @@ define [
         0:
             Class: Portal
             options:
-                targetLevel: "level.4"
+                targetLevel: "level.intro.loopholes"
