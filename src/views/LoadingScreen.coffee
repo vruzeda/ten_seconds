@@ -5,7 +5,7 @@ define [
     "utils/ImageLoader"
 ], (Screen, Kinetic, Constants, ImageLoader) ->
 
-    class SplashScreen extends Screen
+    class LoadingScreen extends Screen
 
         LOADING_IMAGE_PERIOD = 2
 
@@ -13,18 +13,20 @@ define [
             super()
 
             @_layer.add new Kinetic.Rect
+                fill: "#000000"
                 width:  Constants.RESOLUTION.width
                 height: Constants.RESOLUTION.height
-                fill: "black"
 
-            loadingImage = ImageLoader.getImage "loading"
-            @_layer.add new Kinetic.Image
+            @_layer.add new Kinetic.Rect
                 name: "loading"
-                x: Constants.RESOLUTION.width  - loadingImage.width  * Math.sqrt 2
-                y: Constants.RESOLUTION.height - loadingImage.height * Math.sqrt 2
-                offsetX: loadingImage.width  / 2
-                offsetY: loadingImage.height / 2
-                image: loadingImage
+                stroke: Constants.COLORS.BACKGROUND
+                strokeWidth: 5
+                width:  Constants.TILE_SIZE
+                height: Constants.TILE_SIZE
+                x: Constants.RESOLUTION.width  - Constants.TILE_SIZE * Math.sqrt 2
+                y: Constants.RESOLUTION.height - Constants.TILE_SIZE * Math.sqrt 2
+                offsetX: Constants.TILE_SIZE / 2
+                offsetY: Constants.TILE_SIZE / 2
 
             ImageLoader.addToList manifest
             ImageLoader.loadImages

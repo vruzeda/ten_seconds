@@ -2,33 +2,20 @@ define [
     "views/Screen"
     "Kinetic"
     "resources/Constants"
-    "utils/ImageLoader"
     "views/LoadingScreen"
-    "views/MainScreen"
-], (Screen, Kinetic, Constants, ImageLoader, LoadingScreen, MainScreen) ->
+    "views/GameScreen"
+], (Screen, Kinetic, Constants, LoadingScreen, GameScreen) ->
 
     class SplashScreen extends Screen
 
-        constructor: (game) ->
+        constructor: (@_game) ->
             super()
 
             @_layer.add new Kinetic.Rect
+                fill: "#000000"
                 width:  Constants.RESOLUTION.width
                 height: Constants.RESOLUTION.height
-                fill: "black"
 
-            ImageLoader.addToList
-                LOADING_SCREEN:
-                    loading: "images/loading/loading.png"
-
-            ImageLoader.loadImages
-                list: ["LOADING_SCREEN"]
-
-                completeCallback: ->
-                    mainScreenManifest =
-                        MAIN_SCREEN:
-                            mainBackground: "images/main/background.png"
-                            mainPlayButton: "images/main/playbutton.png"
-
-                    game.switchScreen new LoadingScreen mainScreenManifest, ->
-                        game.switchScreen new MainScreen game
+        update: (deltaTime) ->
+            @_game.switchScreen new LoadingScreen {}, =>
+                @_game.switchScreen new GameScreen @_game, Constants.FIRST_LEVEL

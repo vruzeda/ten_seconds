@@ -2,7 +2,8 @@ define [
     "Kinetic"
     "resources/Constants"
     "views/SplashScreen"
-], (Kinetic, Constants, SplashScreen) ->
+    "utils/InputController"
+], (Kinetic, Constants, SplashScreen, InputController) ->
 
     class TenSeconds
 
@@ -14,6 +15,9 @@ define [
             gameLoopAnimation.start()
 
         _createStage: ->
+            # Just register the container
+            InputController.createInstance "container"
+
             new Kinetic.Stage
                 container: "container"
                 width:  Constants.RESOLUTION.width
