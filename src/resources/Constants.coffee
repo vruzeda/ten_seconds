@@ -5,7 +5,7 @@ define [], ->
             width: 1024
             height: 768
 
-        FIRST_LEVEL: "intro/level.intro.1"
+        FIRST_LEVEL: "level.1"
 
         TILE_SIZE: 32
 
@@ -15,7 +15,3 @@ define [], ->
 
         COLORS:
             BACKGROUND: "#CCCCCC"
-            TILE: "#FFFF00"
-            CHARACTER: "#FF00FF"
-            TRAP: "#FF0000"
-            WARP: "#0000FF"

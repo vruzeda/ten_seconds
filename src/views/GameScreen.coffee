@@ -4,18 +4,13 @@ define [
     "resources/Constants"
     "utils/InputController"
     "views/LoadingScreen"
-], (Screen, Kinetic, Constants, InputController, LoadingScreen) ->
+    "models/maps/Map"
+    "views/MapRenderer"
+], (Screen, Kinetic, Constants, InputController, LoadingScreen, Map, MapRenderer) ->
 
     class GameScreen extends Screen
 
-        LEVEL_SYMBOLS =
-            0: "EMPTY"
-            1: "TILE"
-            2: "CHARACTER"
-            3: "TRAP"
-            4: "WARP"
-
-        constructor: (@_game, @_levelFile) ->
+        constructor: (@_game, @_level) ->
             super()
 
             @_configureInputs()
@@ -26,70 +21,19 @@ define [
             @_movingRight = false
             @_running     = false
 
-            @_createLevel @_levelFile
+            @_createLevel @_level
 
-        _createLevel: (levelFile) ->
-            @_layer.removeChildren()
-
-            require ["models/levels/#{levelFile}"], (@LEVEL) =>
-                @_layer.add new Kinetic.Rect
-                    fill:   Constants.COLORS.BACKGROUND
-                    width:  Constants.RESOLUTION.width
-                    height: Constants.RESOLUTION.height
-
-                if @LEVEL.MESSAGE?
-                    @_layer.add new Kinetic.Text @LEVEL.MESSAGE
-
-                tilePositions      = []
-                characterPositions = []
-                trapPositions      = []
-                warpPositions      = []
-
-                for i in [0...@LEVEL.MAP.length]
-                    for j in [0...@LEVEL.MAP[i].length]
-                        switch LEVEL_SYMBOLS[@LEVEL.MAP[i][j]]
-                            when "TILE"
-                                tilePositions.push {i, j}
-
-                            when "CHARACTER"
-                                characterPositions.push {i, j}
-
-                            when "TRAP"
-                                trapPositions.push {i, j}
-
-                            when "WARP"
-                                warpPositions.push {i, j}
-
-                for {i, j} in warpPositions
-                    @_layer.add @_createObjectRect "warp", Constants.COLORS.WARP, i, j
-
-                for {i, j} in trapPositions
-                    @_layer.add @_createObjectRect "trap", Constants.COLORS.TRAP, i, j
-
-                for {i, j} in characterPositions
-                    @_layer.add @_createObjectRect "character", Constants.COLORS.CHARACTER, i, j
-
-                for {i, j} in tilePositions
-                    @_layer.add @_createObjectRect "tile", Constants.COLORS.TILE, i, j
-
-        _createObjectRect: (name, fill, i, j) ->
-            new Kinetic.Rect
-                name: name
-                fill: fill
-                x: (j + 1 / 2) * Constants.TILE_SIZE
-                y: (i + 1 / 2) * Constants.TILE_SIZE
-                width:  Constants.TILE_SIZE
-                height: Constants.TILE_SIZE
-                offsetX: Constants.TILE_SIZE / 2
-                offsetY: Constants.TILE_SIZE / 2
+        _createLevel: (level) ->
+            @_map = new Map level
+            @_mapRenderer = new MapRenderer @_layer, @_map
 
         _configureInputs: ->
-                inputController = InputController.getInstance()
-                inputController.addCharListener "W",     @_moveUp
-                inputController.addCharListener "S",     @_moveDown
-                inputController.addCharListener "A",     @_moveLeft
-                inputController.addCharListener "D",     @_moveRight
-                inputController.addCharListener "SHIFT", @_run
+            inputController = InputController.getInstance()
+            inputController.addCharListener "W",     @_moveUp
+            inputController.addCharListener "S",     @_moveDown
+            inputController.addCharListener "A",     @_moveLeft
+            inputController.addCharListener "D",     @_moveRight
+            inputController.addCharListener "SHIFT", @_run
 
         _moveUp: (event) =>
             @_movingUp = @_checkEventType event
@@ -131,59 +75,77 @@ define [
                 @_checkVictoryCondition characters
 
         _moveCharactersTo: (characters, xIncrement, yIncrement, speed, deltaTime) ->
-            if characters.length == 1
-                @_moveCharacterTo characters[0], xIncrement, yIncrement, speed, deltaTime
-
-            else
-                character0XIncrement = xIncrement
-                character1XIncrement = xIncrement
-                character1XIncrement = -xIncrement if @LEVEL.OPTIONS.REFLEXIVE
-
-                @_moveCharacterTo characters[0], character0XIncrement, yIncrement, speed, deltaTime
-                @_moveCharacterTo characters[1], character1XIncrement, yIncrement, speed, deltaTime
+            for character in characters
+                @_moveCharacterTo character, xIncrement, yIncrement, speed, deltaTime
 
         _moveCharacterTo: (character, xIncrement, yIncrement, speed, deltaTime) ->
-            originalX = character.getX()
-            originalY = character.getY()
-            originalI = Math.floor originalY / 32
-            originalJ = Math.floor originalX / 32
+            actualSpeed =  speed
+            actualSpeed = -speed if character.customData.isReflexive()
 
-            desiredX = originalX + xIncrement * deltaTime * speed / 1000
-            desiredY = originalY + yIncrement * deltaTime * speed / 1000
-            desiredI = Math.floor desiredY / 32
-            desiredJ = Math.floor desiredX / 32
+            originalX      = character.getX()
+            originalY      = character.getY()
+            originalRow    = Math.floor originalY / 32
+            originalColumn = Math.floor originalX / 32
 
-            @_checkValidPosition character, originalI, desiredJ,  "x", desiredX
-            @_checkValidPosition character, desiredI,  originalJ, "y", desiredY
+            desiredX       = originalX + xIncrement * deltaTime * actualSpeed / 1000
+            desiredY       = originalY + yIncrement * deltaTime * actualSpeed / 1000
+            desiredRow     = Math.floor desiredY / 32
+            desiredColumn  = Math.floor desiredX / 32
 
-        _checkValidPosition: (character, i, j, coordinate, position) ->
-            switch LEVEL_SYMBOLS[@LEVEL.MAP[i][j]]
-                when "EMPTY", "CHARACTER"
+            @_checkValidPosition character, originalRow, desiredColumn,  "x", desiredX
+            @_checkValidPosition character, desiredRow,  originalColumn, "y", desiredY
+
+        _checkValidPosition: (character, row, column, coordinate, position) ->
+            object = @_map.getObjectAt row, column
+            switch object.getName()
+                when "empty", "character"
                     character.setAttr coordinate, position
 
-                when "TRAP"
+                when "trap"
                     @_resetLevel()
 
-                when "WARP"
-                    @_nextLevel()
+                when "portal"
+                    targetLevel = object.targetLevel()
+                    if targetLevel?
+                        @_goToLevel targetLevel
+
+                    else
+                        @_nextLevel()
 
         _checkVictoryCondition: (characters) ->
-            return if characters.length == 1
+            if characters.length == 1
+                return
 
-            xDistance = Math.abs characters[0].getX() - characters[1].getX()
-            yDistance = Math.abs characters[0].getY() - characters[1].getY()
+            else
+                splitCharacters = 0
 
-            if xDistance < Constants.TILE_SIZE and yDistance < Constants.TILE_SIZE
-                @_nextLevel()
+                for i in [0...characters.length]
+                    split = true
 
-            else if @_accumulatedTime > 10000
-                @_resetLevel()
+                    for j in [i + 1...characters.length]
+                        xDistance = characters[i].getX() - characters[j].getX()
+                        yDistance = characters[i].getY() - characters[j].getY()
+
+                        if 0.7 * Constants.TILE_SIZE > Math.sqrt xDistance * xDistance + yDistance * yDistance
+                            split = false
+
+                    if split
+                        splitCharacters++
+
+                    else
+                        characters[i].remove()
+
+                if splitCharacters == 1
+                    @_nextLevel()
+
+                else if @_accumulatedTime > 10000
+                    @_resetLevel()
 
         _resetLevel: ->
-            @_goToLevel @_levelFile
+            @_goToLevel @_level
 
         _nextLevel: ->
-            @_goToLevel @LEVEL.NEXT_LEVEL
+            @_goToLevel @_map.getNextLevel()
 
         _goToLevel: (levelFile) ->
             inputController = InputController.getInstance()

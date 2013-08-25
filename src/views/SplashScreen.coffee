@@ -4,7 +4,8 @@ define [
     "resources/Constants"
     "views/LoadingScreen"
     "views/GameScreen"
-], (Screen, Kinetic, Constants, LoadingScreen, GameScreen) ->
+    "models/levels/Levels"
+], (Screen, Kinetic, Constants, LoadingScreen, GameScreen, Levels) ->
 
     class SplashScreen extends Screen
 
@@ -18,4 +19,5 @@ define [
 
         update: (deltaTime) ->
             @_game.switchScreen new LoadingScreen {}, =>
-                @_game.switchScreen new GameScreen @_game, Constants.FIRST_LEVEL
+                Levels.loadLevels =>
+                    @_game.switchScreen new GameScreen @_game, Constants.FIRST_LEVEL
