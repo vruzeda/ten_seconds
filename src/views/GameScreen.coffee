@@ -29,6 +29,16 @@ define [
             @_map = new Map level
             @_mapRenderer = new MapRenderer @_layer, @_map
 
+            @_layer.add new Kinetic.Text
+                name: "timer"
+                text: "Safe"
+                fontSize: 30
+                fontFamily: "Calibri"
+                fill: "#000000"
+                align: "right"
+                width:  Constants.RESOLUTION.width
+                height: Constants.RESOLUTION.height
+
         _configureInputs: ->
             inputController = InputController.getInstance()
             inputController.addCharListener "W",     @_moveUp
@@ -143,6 +153,14 @@ define [
 
                 else if @_accumulatedTime > 10000
                     @_resetLevel()
+
+                else
+                    @_timer ?= @_layer.get(".timer")[0]
+                    currentTimer   = "Time warp in #{10 - Math.floor @_accumulatedTime / 1000}"
+                    displayedTimer = @_timer.getText()
+                    if displayedTimer != currentTimer
+                        @_timer.setText currentTimer
+                        @_needsRedraw = true
 
         _resetLevel: ->
             @_goToLevel @_level
